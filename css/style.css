@@ -84,6 +84,152 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+:root {
+  --bg: #f5f4f2;
+  --ink: #292929;
+  --muted: #6b6864;
+  --rule: #dcd9d4;
+  --body: "Spectral", Georgia, "Times New Roman", serif;
+  --head: "Jost", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --display: "Instrument Serif", Georgia, serif;
+  --max: 680px;
+}
+
+html { color: var(--ink); }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+main.wrap { padding-top: 4rem; }
+
+h1, h2, p, figure, blockquote { margin: 0; }
+p + p { margin-top: 1em; }
+
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { color: var(--muted); }
+
+/* Intro: photo + name/text */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Photo shadow: a blurred copy of the photo sits behind it, so the shadow
+   takes the photo's own colours. The tight box-shadow keeps the pale left
+   edge of the photo from dissolving into the page. */
+.intro__photo {
+  position: relative;
+  isolation: isolate;
+}
+.intro__photo::after {
+  content: "";
+  position: absolute;
+  inset: 8% 3% -6% 3%;
+  z-index: -1;
+  background: url("../img/eddi-flores.jpg") center / cover;
+  filter: blur(20px) saturate(1.6);
+  opacity: 0.75;
+}
+.intro__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(70, 56, 38, 0.18);
+}
+
+.name {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 3.25rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+.role { margin-bottom: 1.5rem; }
+
+blockquote {
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--rule);
+}
+
+cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  color: var(--muted);
+}
+cite::before { content: "— "; }
+
+/* Details: two columns beneath */
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem;
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* Caps label: sub-headers, the subtitle under the name, the footer */
+h2,
+.role,
+.footer p {
+  font-family: var(--head);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h2 { margin-bottom: 0.75rem; }
+/* These two run to two lines on narrow screens */
+.role,
+.footer p {
+  line-height: 1.5;
+  text-wrap: balance;
+}
+.details__col > * + h2 { margin-top: 2.5rem; }
+
+/* Footer */
+.footer {
+  margin-top: 6rem;
+  margin-bottom: 3rem;
+}
+.footer p {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+
+/* Stack below ~tablet */
+@media (max-width: 640px) {
+  main.wrap { padding-top: 2.5rem; }
+  .intro,
+  .details { grid-template-columns: 1fr; gap: 2rem; }
+  .intro__photo { max-width: 15rem; }
+  .name { font-size: 2.75rem; }
+  .details { margin-top: 3.5rem; padding-top: 2.5rem; }
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
