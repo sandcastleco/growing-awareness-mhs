@@ -102,7 +102,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--body);
-  font-size: 16px;
+  font-size: 16.5px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -117,9 +117,16 @@ main.wrap { padding-top: 4rem; }
 
 h1, h2, p, figure, blockquote { margin: 0; }
 p + p { margin-top: 1em; }
+p { text-wrap: pretty; }
 
 a { color: inherit; text-underline-offset: 3px; }
 a:hover { color: var(--muted); }
+
+/* Practice name across the top, above both columns */
+.role {
+  margin-bottom: 3.5rem;
+  text-align: center;
+}
 
 /* Intro: photo + name/text */
 .intro {
@@ -136,12 +143,16 @@ a:hover { color: var(--muted); }
   position: relative;
   isolation: isolate;
 }
+.intro__photo::before,
 .intro__photo::after {
-  content: "";
   position: absolute;
   inset: 8% 3% -6% 3%;
   z-index: -1;
   background: url("../img/eddi-flores.jpg") center / cover;
+  pointer-events: none;
+}
+.intro__photo::before {
+  content: "";
   filter: blur(20px) saturate(1.6);
   opacity: 0.75;
 }
@@ -153,29 +164,38 @@ a:hover { color: var(--muted); }
   box-shadow: 0 0 2px rgba(70, 56, 38, 0.18);
 }
 
-/* Hover: the glow opens out slowly (softer, a little brighter, drifting down)
-   while the photo lifts a touch on its own, quicker timing. */
-.intro__photo::after {
-  transition:
-    filter 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
-    opacity 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
+/* Hover: a second glow (softer, a little brighter, slightly larger) fades in
+   over the resting one and drifts up, while the photo lifts a touch on its
+   own, quicker timing. Each glow keeps a fixed blur and size; only opacity and
+   position animate. Animating the blur radius itself made the glow jitter,
+   because the blur was redrawn at a new radius on every frame. */
 .intro__photo img {
   transition: transform 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 @media (hover: hover) {
-  .intro__photo:hover::after {
+  .intro__photo::after {
+    content: "";
+    /* Sits higher and a little left of the resting glow and drifts up, so the
+       brown of the jacket doesn't pool under the photo */
+    inset: 2% 5% 0% 1%;
     filter: blur(30px) saturate(1.85) brightness(1.08);
+    opacity: 0;
+    scale: 1.06;
+    will-change: opacity, translate;
+    transition:
+      opacity 1.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+      translate 1.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .intro__photo:hover::after {
     opacity: 0.95;
-    transform: translateY(6px) scale(1.06);
+    translate: 0 -4px;
   }
   .intro__photo:hover img { transform: translateY(-2px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .intro__photo::after,
   .intro__photo img { transition: none; }
-  .intro__photo:hover::after,
+  .intro__photo:hover::after { translate: none; }
   .intro__photo:hover img { transform: none; }
 }
 
@@ -185,10 +205,8 @@ a:hover { color: var(--muted); }
   font-size: 3.25rem;
   line-height: 1;
   letter-spacing: -0.01em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
 }
-
-.role { margin-bottom: 1.5rem; }
 
 blockquote {
   margin-top: 1.5rem;
@@ -214,12 +232,12 @@ cite::before { content: "— "; }
   border-top: 1px solid var(--rule);
 }
 
-/* Caps label: sub-headers, the subtitle under the name, the footer */
+/* Caps label: sub-headers, the practice name at the top, the footer */
 h2,
 .role,
 .footer p {
   font-family: var(--head);
-  font-size: 0.8rem;
+  font-size: 0.825rem;
   font-weight: 500;
   line-height: 1.2;
   letter-spacing: 0.16em;
@@ -232,8 +250,7 @@ h2 { margin-bottom: 0.75rem; }
 .footer p {
   line-height: 1.5;
   text-wrap: balance;
-}
-.details__col > * + h2 { margin-top: 2.5rem; }
+}.details__col > * + h2 { margin-top: 2.5rem; }
 
 /* Footer */
 .footer {
@@ -243,7 +260,7 @@ h2 { margin-bottom: 0.75rem; }
 .footer p {
   padding-top: 1.5rem;
   border-top: 1px solid var(--rule);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   text-align: center;
 }
 
@@ -253,9 +270,8 @@ h2 { margin-bottom: 0.75rem; }
   .intro,
   .details { grid-template-columns: 1fr; gap: 2rem; }
   .intro__photo { max-width: 15rem; margin-inline: auto; }
-  .name { font-size: 2.75rem; }
-  .name,
-  .role { text-align: center; }
+  .role { margin-bottom: 2.75rem; }
+  .name { font-size: 2.75rem; text-align: center; }
   .details { margin-top: 3.5rem; padding-top: 2.5rem; }
 }
 
